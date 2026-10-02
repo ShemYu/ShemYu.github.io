@@ -1,0 +1,41 @@
+---
+import type { Lang } from '../i18n';
+import { formatDate, isoDate } from '../lib/format';
+import { postPath, postSlug, type Post } from '../lib/posts';
+
+interface Props {
+  posts: Post[];
+  lang: Lang;
+  empty: string;
+}
+
+const { posts, lang, empty } = Astro.props;
+---
+
+{
+  posts.length === 0 ? (
+    <p class="empty">{empty}</p>
+  ) : (
+    <ol class="post-list">
+      {posts.map((post) => {
+        const slug = postSlug(post.id);
+        return (
+          <li>
+            <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date, lang)}</time>
+            <h2>
+              <a href={postPath(post.data.lang, slug)}>{post.data.title}</a>
+            </h2>
+            <p>{post.data.description}</p>
+            {post.data.tags.length > 0 && (
+              <ul class="tags">
+                {post.data.tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  )
+}

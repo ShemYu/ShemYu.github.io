@@ -1,0 +1,121 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { ui, type Lang } from '../i18n';
+import { absoluteUrl, feedPaths, hreflang, htmlLang, ogLocale } from '../lib/site';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  path: string;
+  alternates: Partial<Record<Lang, string>>;
+  current?: 'home' | 'posts' | 'about';
+  switchHref: string;
+  ogType?: 'website' | 'article';
+  canonicalOverride?: string;
+  publishedTime?: Date;
+  tags?: string[];
+  noindex?: boolean;
+}
+
+const {
+  lang,
+  title,
+  description,
+  path,
+  alternates,
+  current,
+  switchHref,
+  ogType = 'website',
+  canonicalOverride,
+  publishedTime,
+  tags = [],
+  noindex = false,
+} = Astro.props;
+
+const copy = ui[lang];
+const pageTitle = title === copy.siteName ? title : `${title} · ${copy.siteName}`;
+const canonical = canonicalOverride || absoluteUrl(path);
+const feeds = feedPaths(lang);
+const alternateLocale = lang === 'zh' ? 'en_US' : 'zh_TW';
+const xDefault = alternates.en ?? path;
+---
+
+<!doctype html>
+<html lang={htmlLang(lang)}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {}
+      })();
+    </script>
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${copy.feedTitle} (RSS)`} href={absoluteUrl(feeds.rss)} />
+    <link rel="alternate" type="application/atom+xml" title={`${copy.feedTitle} (Atom)`} href={absoluteUrl(feeds.atom)} />
+    {
+      (Object.entries(alternates) as [Lang, string][]).map(([code, href]) => (
+        <link rel="alternate" hreflang={hreflang(code)} href={absoluteUrl(href)} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={absoluteUrl(xDefault)} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={copy.siteName} />
+    <meta property="og:locale" content={ogLocale(lang)} />
+    {alternates.en && alternates.zh && <meta property="og:locale:alternate" content={alternateLocale} />}
+    {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    {tags.map((tag) => <meta property="article:tag" content={tag} />)}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#141311" media="(prefers-color-scheme: dark)" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <a class="skip" href="#content">{copy.skip}</a>
+    <div class="shell">
+      <Header lang={lang} current={current} switchHref={switchHref} />
+      <main id="content">
+        <slot />
+      </main>
+      <Footer lang={lang} />
+    </div>
+    <script is:inline>
+      (function () {
+        var button = document.querySelector('[data-theme-toggle]');
+        if (!button) return;
+        button.addEventListener('click', function () {
+          var current = document.documentElement.getAttribute('data-theme');
+          if (current !== 'light' && current !== 'dark') {
+            current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          var next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          try {
+            localStorage.setItem('theme', next);
+          } catch (e) {}
+        });
+      })();
+    </script>
+  </body>
+</html>

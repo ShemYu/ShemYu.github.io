@@ -1,0 +1,36 @@
+---
+import { ui, type Lang } from '../i18n';
+import { feedPaths, social } from '../lib/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const copy = ui[lang];
+const feeds = feedPaths(lang);
+---
+
+<footer class="site-footer">
+  <ul class="social">
+    <li><a href={social.github} rel="me noreferrer" target="_blank">GitHub</a></li>
+    <li><a href={social.linkedin} rel="me noreferrer" target="_blank">LinkedIn</a></li>
+    <li>
+      {
+        social.x ? (
+          <a href={social.x} rel="me noreferrer" target="_blank">
+            X
+          </a>
+        ) : (
+          <span class="todo" title={copy.xTodoTitle}>
+            {copy.xTodo}
+          </span>
+        )
+      }
+    </li>
+  </ul>
+  <ul class="feeds">
+    <li><a href={feeds.rss}>RSS</a></li>
+    <li><a href={feeds.atom}>Atom</a></li>
+  </ul>
+</footer>

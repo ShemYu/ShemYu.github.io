@@ -1,0 +1,28 @@
+{
+  "name": "shemyu-github-io",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Personal site of Shem Yu, published at https://shemyu.github.io",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "astro dev --host",
+    "build": "astro build && node scripts/check-dist.mjs",
+    "preview": "astro preview --host",
+    "typecheck": "astro check",
+    "check:dist": "node scripts/check-dist.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.12",
+    "@astrojs/sitemap": "^3.6.0",
+    "@fontsource-variable/newsreader": "^5.2.8",
+    "@fontsource-variable/public-sans": "^5.2.5",
+    "astro": "^5.14.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.9.2"
+  }
+}

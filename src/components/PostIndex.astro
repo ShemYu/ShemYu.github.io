@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from './PostList.astro';
+import { ui, type Lang } from '../i18n';
+import { getPosts } from '../lib/posts';
+
+interface Props {
+  lang: Lang;
+  variant: 'home' | 'archive';
+}
+
+const { lang, variant } = Astro.props;
+const copy = ui[lang];
+const posts = await getPosts(lang);
+const isHome = variant === 'home';
+const path = isHome ? (lang === 'zh' ? '/zh/' : '/') : lang === 'zh' ? '/zh/posts/' : '/posts/';
+const switchHref = isHome ? (lang === 'zh' ? '/' : '/zh/') : lang === 'zh' ? '/posts/' : '/zh/posts/';
+const alternates = isHome
+  ? { en: '/', zh: '/zh/' }
+  : { en: '/posts/', zh: '/zh/posts/' };
+---
+
+<Base
+  lang={lang}
+  title={isHome ? copy.siteName : copy.postsTitle}
+  description={isHome ? copy.description : copy.postsDescription}
+  path={path}
+  alternates={alternates}
+  current={isHome ? 'home' : 'posts'}
+  switchHref={switchHref}
+>
+  <header class="intro">
+    {isHome && <p class="kicker">{copy.kicker}</p>}
+    <h1>{isHome ? copy.siteName : copy.postsTitle}</h1>
+    <p class="lede">{isHome ? copy.homeLede : copy.postsLede}</p>
+  </header>
+  <section aria-labelledby="writing-heading">
+    <h2 id="writing-heading" class="section-title">{isHome ? copy.recent : copy.archive}</h2>
+    <PostList posts={posts} lang={lang} empty={copy.emptyPosts} />
+  </section>
+</Base>

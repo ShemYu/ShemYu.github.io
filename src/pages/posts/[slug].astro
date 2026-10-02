@@ -1,0 +1,12 @@
+---
+import PostArticle from '../../components/PostArticle.astro';
+import { pathsFor } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  return pathsFor('en');
+}
+
+const { id } = Astro.props;
+---
+
+<PostArticle id={id} />
