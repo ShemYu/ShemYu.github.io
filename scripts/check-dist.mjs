@@ -117,7 +117,10 @@ if (!home.includes('hreflang="zh-Hant"') || !zhHome.includes('hreflang="en"')) {
 }
 if (!home.includes('https://github.com/ShemYu')) fail('English home is missing GitHub');
 if (!home.includes('https://www.linkedin.com/in/shem-yu-a10494219')) fail('English home is missing LinkedIn');
-if (!home.includes('X (TODO)') || !zhHome.includes('X (TODO)')) fail('home pages are missing the X TODO');
+if (!home.includes('https://x.com/ShemYu') || !zhHome.includes('https://x.com/ShemYu')) {
+  fail('home pages are missing the X link');
+}
+if (home.includes('X (TODO)') || zhHome.includes('X (TODO)')) fail('home pages still show the X TODO');
 if (!home.includes('No posts yet.') || !zhHome.includes('尚無文章。')) fail('empty post list copy is missing');
 if (!about.includes('Draft — edit this before publishing.')) fail('English about is missing the draft banner');
 if (!zhAbout.includes('草稿 — 發布前請自行修改。')) fail('Chinese about is missing the draft banner');

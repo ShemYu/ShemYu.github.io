@@ -5,11 +5,7 @@ export const SITE_ORIGIN = 'https://shemyu.github.io';
 export const social = {
   github: 'https://github.com/ShemYu',
   linkedin: 'https://www.linkedin.com/in/shem-yu-a10494219',
-  /**
-   * TODO: the X profile was not verified. Replace null with the real profile
-   * URL. The handle may be ShemYu.
-   */
-  x: null as string | null,
+  x: 'https://x.com/ShemYu',
 };
 
 export function absoluteUrl(path: string): string {
