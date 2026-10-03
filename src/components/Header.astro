@@ -1,0 +1,44 @@
+---
+import { ui, type Lang } from '../i18n';
+import { hreflang } from '../lib/site';
+
+interface Props {
+  lang: Lang;
+  current?: 'home' | 'posts' | 'about';
+  switchHref: string;
+}
+
+const { lang, current, switchHref } = Astro.props;
+const copy = ui[lang];
+const other = lang === 'en' ? 'zh' : 'en';
+const home = lang === 'zh' ? '/zh/' : '/';
+
+const items = [
+  { id: 'home' as const, href: home, label: copy.navHome },
+  { id: 'posts' as const, href: lang === 'zh' ? '/zh/posts/' : '/posts/', label: copy.navPosts },
+  { id: 'about' as const, href: lang === 'zh' ? '/zh/about/' : '/about/', label: copy.navAbout },
+];
+---
+
+<header class="site-header">
+  <a class="wordmark" href={home}>Shem Yu</a>
+  <nav class="nav" aria-label={copy.navLabel}>
+    {
+      items.map((item) => (
+        <a href={item.href} aria-current={item.id === current ? 'page' : undefined}>
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+  <div class="tools">
+    <p class="langs">
+      <span class="lang-current">{copy.langCurrent}</span>
+      <a href={switchHref} hreflang={hreflang(other)} lang={hreflang(other)}>{copy.langSwitch}</a>
+    </p>
+    <button type="button" class="theme" data-theme-toggle aria-label={copy.themeLabel}>
+      <span class="when-light">{copy.themeDark}</span>
+      <span class="when-dark">{copy.themeLight}</span>
+    </button>
+  </div>
+</header>

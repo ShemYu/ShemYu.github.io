@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import { ui } from '../i18n';
+---
+
+<Base
+  lang="en"
+  title={ui.en.notFoundTitle}
+  description={ui.en.notFoundDescription}
+  path="/404.html"
+  alternates={{ en: '/404.html' }}
+  switchHref="/zh/"
+  noindex={true}
+>
+  <h1>{ui.en.notFoundTitle}</h1>
+  <p class="lede">{ui.en.notFoundLede}</p>
+  <p class="lede">{ui.zh.notFoundLede}</p>
+  <p><a href="/">Home</a> · <a href="/zh/" hreflang="zh-Hant" lang="zh-Hant">首頁</a></p>
+</Base>

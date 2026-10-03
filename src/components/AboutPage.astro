@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import { ui, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const copy = ui[lang];
+const path = lang === 'zh' ? '/zh/about/' : '/about/';
+const switchHref = lang === 'zh' ? '/about/' : '/zh/about/';
+---
+
+<Base
+  lang={lang}
+  title={copy.aboutTitle}
+  description={copy.aboutDescription}
+  path={path}
+  alternates={{ en: '/about/', zh: '/zh/about/' }}
+  current="about"
+  switchHref={switchHref}
+>
+  <p class="draft-banner">{copy.aboutDraft}</p>
+  <h1>{copy.aboutTitle}</h1>
+  <div class="prose about-copy">
+    {copy.aboutParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+</Base>

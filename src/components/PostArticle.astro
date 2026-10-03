@@ -1,0 +1,76 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { ui, type Lang } from '../i18n';
+import { formatDate, isoDate } from '../lib/format';
+import { findTranslation, postPath, postSlug } from '../lib/posts';
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const post = await getEntry('blog', id);
+if (!post) throw new Error(`Missing post ${id}`);
+
+const lang = post.data.lang;
+const copy = ui[lang];
+const slug = postSlug(post.id);
+const path = postPath(lang, slug);
+const translation = await findTranslation(post);
+const alternates: Partial<Record<Lang, string>> = { [lang]: path };
+if (translation) {
+  alternates[translation.data.lang] = postPath(translation.data.lang, postSlug(translation.id));
+}
+const switchHref = translation
+  ? postPath(translation.data.lang, postSlug(translation.id))
+  : lang === 'en'
+    ? '/zh/posts/'
+    : '/posts/';
+const { Content } = await render(post);
+---
+
+<Base
+  lang={lang}
+  title={post.data.title}
+  description={post.data.description}
+  path={path}
+  alternates={alternates}
+  current="posts"
+  switchHref={switchHref}
+  ogType="article"
+  canonicalOverride={post.data.canonical}
+  publishedTime={post.data.date}
+  tags={post.data.tags}
+  noindex={post.data.draft}
+>
+  <article class="article">
+    {post.data.draft && <p class="draft-banner">{copy.postDraft}</p>}
+    <header>
+      <p class="article-meta">
+        <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date, lang)}</time>
+      </p>
+      <h1>{post.data.title}</h1>
+      <p class="dek">{post.data.description}</p>
+      {
+        post.data.tags.length > 0 && (
+          <ul class="tags">
+            {post.data.tags.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+    {
+      translation && (
+        <p class="translation">
+          <a href={postPath(translation.data.lang, postSlug(translation.id))}>{copy.translationLabel}</a>
+        </p>
+      )
+    }
+  </article>
+</Base>
