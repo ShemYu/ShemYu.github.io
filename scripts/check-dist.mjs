@@ -117,7 +117,7 @@ if (!home.includes('hreflang="zh-Hant"') || !zhHome.includes('hreflang="en"')) {
 }
 if (!home.includes('https://github.com/ShemYu')) fail('English home is missing GitHub');
 if (!home.includes('https://www.linkedin.com/in/shem-yu-a10494219')) fail('English home is missing LinkedIn');
-if (!home.includes('https://x.com/ShemYu') || !zhHome.includes('https://x.com/ShemYu')) {
+if (!home.includes('https://x.com/ShemYuYu') || !zhHome.includes('https://x.com/ShemYuYu')) {
   fail('home pages are missing the X link');
 }
 if (home.includes('X (TODO)') || zhHome.includes('X (TODO)')) fail('home pages still show the X TODO');
