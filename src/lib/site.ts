@@ -5,7 +5,7 @@ export const SITE_ORIGIN = 'https://shemyu.github.io';
 export const social = {
   github: 'https://github.com/ShemYu',
   linkedin: 'https://www.linkedin.com/in/shem-yu-a10494219',
-  x: 'https://x.com/ShemYu',
+  x: 'https://x.com/ShemYuYu',
 };
 
 export function absoluteUrl(path: string): string {
